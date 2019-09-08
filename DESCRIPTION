@@ -17,3 +17,5 @@ Imports:
     tokenizers,
     tibble
 License: MIT + file LICENSE
+URL: https://github.com/mkearney/dict
+BugReports: https://github.com/mkearney/dict/issues
