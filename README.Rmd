@@ -1,0 +1,109 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# dict
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of dict is to make it easy to create, modify, and use word-based 
+dictionaries for analyzing natural language texts. In other words, this package
+is designed to create sentiment-analysis like tools for measuring the extent to
+which natural language reflects (positively and/or negatively) any user-defined 
+dimension or topic (e.g., politics, sports, emotions, active, pass, 
+medical, philosophical, etc.).
+
+## Installation
+
+You can install the released version of dict from [CRAN](https://CRAN.R-project.org) with:
+
+``` r
+install.packages("dict")
+```
+
+You can install the developmernt version of dict from [Github](https://github.com) with:
+
+``` r
+remotes::install_github("mkearney/dict")
+```
+
+## Example
+
+Create vectors of positively and negatively identifying words for a simple 
+"valence" dimension.
+
+```{r}
+## load package
+library(dict)
+
+## vector of positive words
+pos <- c("like", "love", "amazing", "excellent", "great", "fantastic",
+  "incredible", "awesome", "best", "favorite", "fan", "fun", "enjoyed",
+  "enjoyed", "good", "solid", "better", "soooo", "happy")
+
+## vetor of negative words
+neg <- c("hate", "loathe", "dislike", "awful", "horrible", "worst",
+  "miserable", "ruin", "ruining", "destroy", "destroyed", "destroying",
+  "pathetic", "hated", "hateful", "unhappy", "horrifies", "horrifying",
+  "terrible")
+```
+
+Create a dictionary using only positively-defining words:
+
+```{r}
+## create dictionary using only positive words
+dict(pos)
+```
+
+Create a dictionary using both positvely and negatively associated words:
+
+```{r}
+## create dictionary using both positive and negative words
+d <- dict(list(pos = pos, neg = neg))
+
+## view up to n entries of dictionary
+print(d, n = 100)
+```
+
+Apply a dictionary to some example text:
+
+```{r}
+## example text
+txt <- c("love amazing excellent good",
+  "hate loathe horrifies unhappy terrible",
+  "awesome best hateful hated worst")
+
+## get estimate for each element of txt using pos/neg dictionary
+d(txt)
+
+## create tibble
+tibble::tibble(
+  text = txt,
+  sent = d(txt)
+)
+```
+
+## TO DO
+
+Functions that make it easy to `add_` and `subtract_` words from a dictionary, e.g.,
+
+```{r, eval=FALSE}
+d %>%
+  add_words(c("these", "words", "here")) %>%
+  subtract_words(c("this", "the")) %>%
+  add_synonyms(n_max = 10) %>%
+  add_cowords(wikipedia_text)
+```
+
