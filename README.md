@@ -172,7 +172,7 @@ d %>%
   add_cowords(wikipedia_text)
 ```
 
-A function to convert a dictionary into a standalone R package (perhaps using the super fast [meanr](https://github.com//meanr) package as a template). The package would have the word list built-in.
+A function to convert a dictionary into a standalone R package (perhaps using the super fast [meanr](https://github.com/wrathematics/meanr) package as a template). The package would have the word list built-in.
 
 ``` r
 as_package(pkgname = d)
