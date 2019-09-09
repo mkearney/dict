@@ -97,13 +97,4 @@ tibble::tibble(
 
 ## TO DO
 
-Functions that make it easy to `add_` and `subtract_` words from a dictionary, e.g.,
-
-```{r, eval=FALSE}
-d %>%
-  add_words(c("these", "words", "here")) %>%
-  subtract_words(c("this", "the")) %>%
-  add_synonyms(n_max = 10) %>%
-  add_cowords(wikipedia_text)
-```
-
+See [issues labelled enhancement](https://github.com/mkearney/dict/labels/enhancement).

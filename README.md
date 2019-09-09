@@ -161,19 +161,5 @@ tibble::tibble(
 
 ## TO DO
 
-Functions that make it easy to `add_` and `subtract_` words from a
-dictionary, e.g.,
-
-``` r
-d %>%
-  add_words(c("these", "words", "here")) %>%
-  subtract_words(c("this", "the")) %>%
-  add_synonyms(n_max = 10) %>%
-  add_cowords(wikipedia_text)
-```
-
-A function to convert a dictionary into a standalone R package (perhaps using the super fast [meanr](https://github.com/wrathematics/meanr) package as a template). The package would have the word list built-in.
-
-``` r
-as_package(pkgname = d)
-```
+See [issues labelled
+enhancement](https://github.com/mkearney/dict/labels/enhancement).
