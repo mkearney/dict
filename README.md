@@ -167,14 +167,6 @@ path_pkg <- file.path(tempdir(), "simpleexample")
 
 ## create R package featuring d
 create_dict_pkg(d, path_pkg)
-```
-
-``` r
-## create package path via temp directory
-path_pkg <- file.path(tempdir(), "simpleexample")
-
-## create R package featuring d
-create_dict_pkg(d, path_pkg)
 
 ## test new package's score function on txt vector
 simpleexample::score(txt)
