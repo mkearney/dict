@@ -15,7 +15,10 @@ Imports:
     magrittr,
     dapr,
     tokenizers,
-    tibble
+    tibble,
+    usethis,
+    tfse,
+    devtools
 License: MIT + file LICENSE
 URL: https://github.com/mkearney/dict
 BugReports: https://github.com/mkearney/dict/issues
