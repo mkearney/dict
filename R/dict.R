@@ -93,7 +93,7 @@ dict.tbl_df <- function(x) {
     stopifnot(is.numeric(x[[2]]))
     names(x)[2] <- "weight"
   }
-  f <- function(txt) dict_apply(txt, x)
+  f <- function(txt) dict:::dict_apply(txt, x)
   attr(f, "dict") <- dict
   structure(f,
     class = c("dict", "function"),
