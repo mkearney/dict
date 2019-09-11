@@ -51,6 +51,8 @@ neg <- c("hate", "loathe", "dislike", "awful", "horrible", "worst",
   "terrible")
 ```
 
+## Create dictionaries
+
 Create a dictionary using only positively-defining words:
 
 ``` r
@@ -134,19 +136,21 @@ print(d, n = 100)
 #> 38 terrible       -1
 ```
 
+## Use word dictionary
+
 Apply a dictionary to some example text:
 
 ``` r
 ## example text
 txt <- c("love amazing excellent good",
-  "hate loathe horrifies unhappy terrible",
-  "awesome best hateful hated worst")
+"hate loathe horrifies unhappy terrible",
+"awesome best hateful hated worst")
 
 ## get estimate for each element of txt using pos/neg dictionary
 d(txt)
 #> [1]  4 -5 -1
 
-## create tibble
+## store estimates in a tibble
 tibble::tibble(
   text = txt,
   sent = d(txt)
@@ -157,6 +161,39 @@ tibble::tibble(
 #> 1 love amazing excellent good                4
 #> 2 hate loathe horrifies unhappy terrible    -5
 #> 3 awesome best hateful hated worst          -1
+```
+
+## Export dictionary via R package
+
+Export word dictionaries as super fast packages using this wrapper
+around `usethis::create_package()`
+
+``` r
+## create package path via temp directory
+path_pkg <- file.path(tempdir(), "simpleexample")
+
+## create R package featuring d
+create_dict_pkg(d, path_pkg)
+```
+
+``` r
+## create txt vector to test package on
+txt <- c("good great terrible terrible",
+ "good", "good", "other", "awful",
+ "awful", "good", "great", "terrible")
+
+## use new package on txt
+simpleexample::score(txt)
+#>   positive negative score wc
+#> 1        2        2     0  4
+#> 2        1        0     1  1
+#> 3        1        0     1  1
+#> 4        0        0     0  1
+#> 5        0        1    -1  1
+#> 6        0        1    -1  1
+#> 7        1        0     1  1
+#> 8        1        0     1  1
+#> 9        0        1    -1  1
 ```
 
 ## TO DO
