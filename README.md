@@ -91,7 +91,7 @@ words:
 d <- dict(list(pos = pos, neg = neg))
 
 ## view up to n entries of dictionary
-print(d, n = 100)
+print(d, n = 30)
 #> # A dict[ionary]
 #> # A tibble: 38 x 2
 #>    word       weight
@@ -126,14 +126,7 @@ print(d, n = 100)
 #> 28 ruining        -1
 #> 29 destroy        -1
 #> 30 destroyed      -1
-#> 31 destroying     -1
-#> 32 pathetic       -1
-#> 33 hated          -1
-#> 34 hateful        -1
-#> 35 unhappy        -1
-#> 36 horrifies      -1
-#> 37 horrifying     -1
-#> 38 terrible       -1
+#> # … with 8 more rows
 ```
 
 ## Use word dictionary
@@ -177,12 +170,13 @@ create_dict_pkg(d, path_pkg)
 ```
 
 ``` r
-## create txt vector to test package on
-txt <- c("good great terrible terrible",
- "good", "good", "other", "awful",
- "awful", "good", "great", "terrible")
+## create package path via temp directory
+path_pkg <- file.path(tempdir(), "simpleexample")
 
-## use new package on txt
+## create R package featuring d
+create_dict_pkg(d, path_pkg)
+
+## test new package's score function on txt vector
 simpleexample::score(txt)
 #>   positive negative score wc
 #> 1        2        2     0  4
