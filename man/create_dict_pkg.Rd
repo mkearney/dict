@@ -40,7 +40,7 @@ d <- dict(list(
 path_pkg <- file.path(tempdir(), "simpleexample")
 
 ## create R package featuring d
-create_dict_pkg(d, path_pkg)
+#create_dict_pkg(d, path_pkg)
 
 ## create txt vector to test package on
 txt <- c("good great terrible terrible",
