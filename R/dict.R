@@ -7,11 +7,10 @@
 #'
 #' pos <- c("like", "love", "amazing", "excellent", "great", "fantastic",
 #'   "incredible", "awesome", "best", "favorite", "fan", "fun", "enjoyed",
-#'   "enjoyed", "good", "solid", "better", "soooo", "happy")
+#'   "good", "solid", "better", "soooo", "happy")
 #' neg <- c("hate", "loathe", "dislike", "awful", "horrible", "worst",
 #'   "miserable", "ruin", "ruining", "destroy", "destroyed", "destroying",
-#'   "pathetic", "hated", "hateful", "unhappy", "horrifies", "horrifying",
-#'   "terrible")
+#'   "pathetic", "hated", "hateful", "unhappy", "terrible")
 #'
 #' ## create dictionary using only positive words
 #' dict(pos)
@@ -23,7 +22,7 @@
 #' d <- dict(list(pos = pos, neg = neg))
 #'
 #' ## view up to n entries of dictionary
-#' print(d, n = 100)
+#' print(d, n = 15)
 #'
 #' ## example text
 #' txt <- c("love amazing excellent good",
@@ -31,12 +30,12 @@
 #'   "awesome best hateful hated worst")
 #'
 #' ## get estimate for each element of txt using pos/neg dictionary
-#' d(txt)
+#' d$score(txt)
 #'
 #' ## create tibble
 #' tibble::tibble(
 #'   text = txt,
-#'   sent = d(txt)
+#'   sent = d$score_score(txt)
 #' )
 #'
 #' @return A dictionary

@@ -11,9 +11,6 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
-if ("simpleexample" %in% installed.packages()) {
-  remove.packages("simpleexample")
-}
 ```
 
 # dict
@@ -106,9 +103,7 @@ Export word dictionaries as super fast packages using this wrapper around `useth
 path_pkg <- file.path(tempdir(), "simpleexample")
 
 ## create R package featuring d
-sh <- capture.output(
-  suppressMessages(create_dict_pkg(d, path_pkg))
-)
+create_dict_pkg(d, path_pkg)
 
 ## test new package's score function on txt vector
 simpleexample::score(txt)
@@ -128,7 +123,7 @@ bm <- bench::mark(
   dict_pkg = simpleexample::score(txt),
   relative = TRUE,
   check = FALSE,
-  iterations = 15
+  iterations = 30
 )
 
 ## view results

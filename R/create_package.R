@@ -40,17 +40,8 @@ create_dict_pkg <- function(d,
                             open = FALSE,
                             rstudio = TRUE) {
   if (basename(path) %in% utils::installed.packages()) {
-    utils::remove.packages(basename(path))
+    suppressMessages(utils::remove.packages(basename(path)))
   }
-  deps <- paste0(c(
-    'magrittr',
-    'dapr',
-    'tokenizers',
-    'tibble',
-    'usethis',
-    'tfse',
-    'devtools'),
-    collapse = ",\n    ")
   usethis::create_package(path,
     list(Version = "0.0.1",
       Title = "Word Dictionary Analysis Scorer",
@@ -59,8 +50,7 @@ create_dict_pkg <- function(d,
       LazyData = 'yes',
       LazyLoad = 'yes',
       NeedsCompilation = 'yes',
-      ByteCompile = 'yes'#,
-      #Imports = deps
+      ByteCompile = 'yes'
     ),
     rstudio, open = FALSE)
   create_pkg_skeleton(path)
@@ -76,8 +66,8 @@ create_dict_pkg <- function(d,
   Sys.chmod(file.path(path, "configure.win"), "777")
   Sys.chmod(file.path(path, "cleanup"), "777")
   devtools::load_all(path, quiet = TRUE)
-  devtools::document(path)
-  devtools::install(path, quiet = TRUE, upgrade = "always")
+  sh <- utils::capture.output(suppressMessages(devtools::document(path)))
+  sh <- utils::capture.output(suppressMessages(devtools::install(path, quiet = TRUE, upgrade = "always")))
   if (open) {
     utils::browseURL(list.files(path, full.names = TRUE, pattern = "\\.Rproj$"))
   }
@@ -118,6 +108,7 @@ write_utf8 <- function(x, path, ...) {
   opts <- options(encoding = "native.enc")
   on.exit(options(opts), add = TRUE)
   writeLines(enc2utf8(x), path, ...)
+  invisible(path)
 }
 
 write_pos_neg <- function(x, path) {
@@ -128,6 +119,7 @@ write_pos_neg <- function(x, path) {
   tfse::print_complete("Save positive word list")
   write_utf8(neg, file.path(path, "src/hashtable/maker/negative.txt"))
   tfse::print_complete("Save negative word list")
+  invisible()
 }
 
 make_hashtables <- function(path) {
@@ -136,22 +128,20 @@ make_hashtables <- function(path) {
     paste0("cd ", file.path(path, "src/hashtable/maker"),
       " && sh ./makewords.sh")
   )
-  tfse::print_complete("Create hash words")
 
   ## create hash files
   system(
     paste0("cd ", file.path(path, "src/hashtable/maker"),
       " && sh ./make2tables.sh")
   )
-  tfse::print_complete("Create hash tables")
 
   ## change size_t to pointer
   x <- tfse::readlines(file.path(path, "src/hashtable/maker/neghash.h"))
   x <- sub("int\\)\\(size_t", "intptr_t", x)
-  writeLines(x, file.path(path, "src/hashtable/maker/neghash.h"))
+  write_utf8(x, file.path(path, "src/hashtable/maker/neghash.h"))
   x <- tfse::readlines(file.path(path, "src/hashtable/maker/poshash.h"))
   x <- sub("int\\)\\(size_t", "intptr_t", x)
-  writeLines(x, file.path(path, "src/hashtable/maker/poshash.h"))
+  write_utf8(x, file.path(path, "src/hashtable/maker/poshash.h"))
 
   ## move hash files
   if (file.exists(file.path(path, "src/hashtable/neghash.h")))
@@ -164,4 +154,5 @@ make_hashtables <- function(path) {
     file.path(path, "src/hashtable/neghash.h"))
   file.remove(file.path(path, "src/hashtable/maker/poshash.h"))
   file.remove(file.path(path, "src/hashtable/maker/neghash.h"))
+  invisible()
 }

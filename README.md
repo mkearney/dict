@@ -126,9 +126,32 @@ around `usethis::create_package()`
 path_pkg <- file.path(tempdir(), "simpleexample")
 
 ## create R package featuring d
-sh <- capture.output(
-  suppressMessages(create_dict_pkg(d, path_pkg))
-)
+create_dict_pkg(d, path_pkg)
+#> ✔ Creating '/tmp/RtmppISNUk/simpleexample/'
+#> ✔ Setting active project to '/tmp/RtmppISNUk/simpleexample'
+#> ✔ Creating 'R/'
+#> ✔ Writing 'DESCRIPTION'
+#> Package: simpleexample
+#> Title: Word Dictionary Analysis Scorer
+#> Version: 0.0.1
+#> Authors@R (parsed):
+#>     * Michael W. Kearney <kearneymw@missouri.edu> [aut, cre] (<https://orcid.org/0000-0002-0730-4694>)
+#> Description: Data and functions for a natural language word dictionary
+#> License: What license it uses
+#> Depends:
+#>     R (>= 3.0.0)
+#> ByteCompile: yes
+#> Encoding: UTF-8
+#> LazyData: yes
+#> LazyLoad: yes
+#> NeedsCompilation: yes
+#> ✔ Writing 'NAMESPACE'
+#> ✔ Writing 'simpleexample.Rproj'
+#> ✔ Adding '.Rproj.user' to '.gitignore'
+#> ✔ Adding '^simpleexample\\.Rproj$', '^\\.Rproj\\.user$' to '.Rbuildignore'
+#> ✔ Setting active project to '<no active project>'
+#> [32m✔[39m Save positive word list
+#> [32m✔[39m Save negative word list
 
 ## test new package's score function on txt vector
 simpleexample::score(txt)
@@ -158,7 +181,7 @@ bm <- bench::mark(
   dict_pkg = simpleexample::score(txt),
   relative = TRUE,
   check = FALSE,
-  iterations = 15
+  iterations = 30
 )
 #> Warning: Some expressions had a GC in every iteration; so filtering is
 #> disabled.
@@ -168,10 +191,10 @@ bm
 #> # A tibble: 4 x 6
 #>   expression            min  median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr>          <dbl>   <dbl>     <dbl>     <dbl>    <dbl>
-#> 1 SentimentAnalysis 66927.  66534.         1        Inf      Inf
-#> 2 syuzhet              49.6    56.3     1188.       Inf      NaN
-#> 3 dict_fun             22.0    21.5     2969.       Inf      NaN
-#> 4 dict_pkg              1       1      45873.       NaN      NaN
+#> 1 SentimentAnalysis 66826.  67647.         1        Inf      Inf
+#> 2 syuzhet              49.9    55.8     1211.       Inf      NaN
+#> 3 dict_fun             21.8    21.0     3135.       Inf      NaN
+#> 4 dict_pkg              1       1      57194.       NaN      NaN
 
 ## view plot
 ggplot2::autoplot(bm)
