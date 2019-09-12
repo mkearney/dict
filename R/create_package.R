@@ -32,7 +32,7 @@
 #'   "awful", "good", "great", "terrible")
 #'
 #' ## use new package on txt
-#' simpleexample::score(txt)
+#' #simpleexample::score(txt)
 #'
 #' @export
 create_dict_pkg <- function(d,

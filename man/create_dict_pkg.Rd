@@ -48,6 +48,6 @@ txt <- c("good great terrible terrible",
   "awful", "good", "great", "terrible")
 
 ## use new package on txt
-simpleexample::score(txt)
+#simpleexample::score(txt)
 
 }
