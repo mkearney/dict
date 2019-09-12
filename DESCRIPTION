@@ -21,7 +21,8 @@ Imports:
     tibble,
     usethis,
     tfse,
-    devtools
+    devtools,
+    utils
 Depends: R (>= 2.10)
 License: MIT + file LICENSE
 URL: https://github.com/mkearney/dict
