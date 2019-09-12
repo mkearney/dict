@@ -166,21 +166,43 @@ around `usethis::create_package()`
 path_pkg <- file.path(tempdir(), "simpleexample")
 
 ## create R package featuring d
-create_dict_pkg(d, path_pkg)
+sh <- capture.output(
+  suppressMessages(create_dict_pkg(d, path_pkg))
+)
 
 ## test new package's score function on txt vector
 simpleexample::score(txt)
 #>   positive negative score wc
-#> 1        2        2     0  4
-#> 2        1        0     1  1
-#> 3        1        0     1  1
-#> 4        0        0     0  1
-#> 5        0        1    -1  1
-#> 6        0        1    -1  1
-#> 7        1        0     1  1
-#> 8        1        0     1  1
-#> 9        0        1    -1  1
+#> 1        4        0     4  4
+#> 2        0        5    -5  5
+#> 3        2        3    -1  5
 ```
+
+Compare the speed of the default returned function (written in R) versus
+the optimized version in the standalone package (written in C)
+
+``` r
+## compare speed
+bm <- bench::mark(
+  fun = d(txt),
+  pkg = simpleexample::score_score(txt),
+  relative = TRUE
+)
+
+## view results
+bm
+#> # A tibble: 2 x 6
+#>   expression   min median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
+#> 1 fun         6.26   6.10      1         1        1.95
+#> 2 pkg         1      1         6.19      1.36     1
+
+## view plot
+ggplot2::autoplot(bm)
+#> Loading required namespace: tidyr
+```
+
+<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
 
 ## TO DO
 
