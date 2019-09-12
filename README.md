@@ -142,20 +142,36 @@ Compare the speed of the default returned function (written in R) versus
 the optimized version in the standalone package (written in C)
 
 ``` r
+## analyzeSentiment() won't work unless you load the whole library
+library(SentimentAnalysis)
+#> 
+#> Attaching package: 'SentimentAnalysis'
+#> The following object is masked from 'package:base':
+#> 
+#>     write
+
 ## compare speed
 bm <- bench::mark(
-  fun = d$score(txt),
-  pkg = simpleexample::score(txt),
-  relative = TRUE
+  SentimentAnalysis = analyzeSentiment(txt),
+  syuzhet = syuzhet::get_sentiment(txt),
+  dict_fun = d$score(txt),
+  dict_pkg = simpleexample::score(txt),
+  relative = TRUE,
+  check = FALSE,
+  iterations = 15
 )
+#> Warning: Some expressions had a GC in every iteration; so filtering is
+#> disabled.
 
 ## view results
 bm
-#> # A tibble: 2 x 6
-#>   expression   min median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-#> 1 fun         23.9   23.2       1         Inf     1.75
-#> 2 pkg          1      1        23.8       NaN     1
+#> # A tibble: 4 x 6
+#>   expression            min  median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr>          <dbl>   <dbl>     <dbl>     <dbl>    <dbl>
+#> 1 SentimentAnalysis 66927.  66534.         1        Inf      Inf
+#> 2 syuzhet              49.6    56.3     1188.       Inf      NaN
+#> 3 dict_fun             22.0    21.5     2969.       Inf      NaN
+#> 4 dict_pkg              1       1      45873.       NaN      NaN
 
 ## view plot
 ggplot2::autoplot(bm)

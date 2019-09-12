@@ -117,11 +117,18 @@ simpleexample::score(txt)
 Compare the speed of the default returned function (written in R) versus the optimized version in the standalone package (written in C)
 
 ```{r}
+## analyzeSentiment() won't work unless you load the whole library
+library(SentimentAnalysis)
+
 ## compare speed
 bm <- bench::mark(
-  fun = d$score(txt),
-  pkg = simpleexample::score(txt),
-  relative = TRUE
+  SentimentAnalysis = analyzeSentiment(txt),
+  syuzhet = syuzhet::get_sentiment(txt),
+  dict_fun = d$score(txt),
+  dict_pkg = simpleexample::score(txt),
+  relative = TRUE,
+  check = FALSE,
+  iterations = 15
 )
 
 ## view results
