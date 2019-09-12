@@ -1,3 +1,12 @@
+#' Use dictionary
+#'
+#' Calculates counts based on word dictionaries
+#'
+#' @param x Input text vector
+#' @param dict A word dictionary
+#' @return Counts.
+#' @keywords internal
+#' @export
 dict_apply <- function(x, dict) {
   if (is.character(x)) {
     x <- tokenizers::tokenize_words(

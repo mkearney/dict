@@ -2,19 +2,19 @@
 #'
 #' Exports one or more word dictionaries as a standalone R package
 #'
-#' @param d Word dictionary created by \code{\link{dict()}}
+#' @param d Word dictionary created by \code{\link{dict}}
 #' @param path A path. If it exists, it is used. If it does not exist, it is
 #'   created, provided that the parent path exists.
-#' @param fields A named list of fields to add to DESCRIPTION, potentially
-#'   overriding default values. See use_description() for how you can set
-#'   personalized defaults using pack?age options
 #' @param rstudio If TRUE, calls use_rstudio() to make the new package or
 #'   project into an RStudio Project. If FALSE and a non-package project, a
 #'   sentinel .here file is placed so that the directory can be recognized as a
 #'   project by the here or rprojroot packages.
 #' @param open If TRUE, activates the new project
 #' @return Path to the newly created project or package, invisibly.
+#' @details The created package is modelled off the extremely fast meanr
+#'   package, which means it requires compilation but is extremely fast.
 #' @examples
+#'
 #' ## create dict
 #' d <- dict(list(
 #'   pos = c("good", "great", "awesome"),
@@ -34,57 +34,84 @@
 #' ## use new package on txt
 #' simpleexample::score(txt)
 #'
-#' }
 #' @export
 create_dict_pkg <- function(d,
                             path,
                             open = FALSE,
-                            fields = NULL,
                             rstudio = TRUE) {
-  usethis::create_package(path, fields, rstudio, open = FALSE)
-  if (!dir.exists(file.path(path, "inst"))) {
-    dir.create(file.path(path, "inst"))
+  if (basename(path) %in% installed.packages()) {
+    remove.packages(basename(path))
   }
-  tmp <- system.file("rpkg", "templates", "meanrtemplate", package = "dict")
-  file.copy(
-    file.path(tmp, "../meanrtemplate/inst/sexputils"),
-    file.path(path, "inst/"),
-    recursive = TRUE
-  )
-  file.copy(
-    file.path(tmp, "../meanrtemplate/src"),
-    file.path(path, "./"),
-    recursive = TRUE
-  )
-  file.copy(
-    file.path(tmp, "../meanrtemplate/R"),
-    file.path(path, "./"),
-    recursive = TRUE
-  )
-  s <- tfse::readlines(file.path(path, "R/score.r"))
+  deps <- paste0(c(
+    'magrittr',
+    'dapr',
+    'tokenizers',
+    'tibble',
+    'usethis',
+    'tfse',
+    'devtools'),
+    collapse = ",\n    ")
+  usethis::create_package(path,
+    list(Version = "0.0.1",
+      Title = "Word Dictionary Analysis Scorer",
+      Description = "Data and functions for a natural language word dictionary",
+      Depends = 'R (>= 3.0.0)',
+      LazyData = 'yes',
+      LazyLoad = 'yes',
+      NeedsCompilation = 'yes',
+      ByteCompile = 'yes',
+      Imports = deps
+    ),
+    rstudio, open = FALSE)
+  create_pkg_skeleton(path)
+  #unlink(file.path(path, "NAMESPACE"))
+  s <- tfse::readlines(file.path(path, "R/score.R"))
   s <- gsub("meanrtemplate", basename(path), s)
-  writeLines(gsub("meanr", basename(path), s), file.path(path, "R/score.r"))
+  write_utf8(gsub("meanr", basename(path), s), file.path(path, "R/score.R"))
   s <- tfse::readlines(file.path(path, "src/native.c"))
-  writeLines(gsub("meanr", basename(path), s), file.path(path, "src/native.c"))
-  file.copy(
-    file.path(tmp, "../meanrtemplate/cleanup"),
-    file.path(path, "./")
-  )
-  file.copy(
-    file.path(tmp, "../meanrtemplate/configure"),
-    file.path(path, "./")
-  )
+  write_utf8(gsub("meanr", basename(path), s), file.path(path, "src/native.c"))
   write_pos_neg(d, path)
   make_hashtables(path)
-  devtools::load_all(path)
+  Sys.chmod(file.path(path, "configure"), "777")
+  Sys.chmod(file.path(path, "configure.ac"), "777")
+  Sys.chmod(file.path(path, "configure.win"), "777")
+  Sys.chmod(file.path(path, "cleanup"), "777")
+  devtools::load_all(path, quiet = TRUE)
   devtools::document(path)
-  devtools::install(path, build = TRUE)
+  devtools::install(path, quiet = TRUE, upgrade = "always")
   if (open) {
-    if (usethis:::proj_activate(path)) {
-      on.exit()
-    }
+    browseURL(list.files(path, full.names = TRUE, pattern = "\\.Rproj$"))
   }
-  invisible(usethis:::proj_get())
+  invisible(path)
+}
+
+
+create_pkg_skeleton <- function(path) {
+  ## first, cleanup any preexisting directories
+  if (dir.exists(file.path(path, "inst"))) {
+    unlink(file.path(path, "inst"), recursive = TRUE)
+  }
+  if (dir.exists(file.path(path, "src"))) {
+    unlink(file.path(path, "src"), recursive = TRUE)
+  }
+  if (dir.exists(file.path(path, "R"))) {
+    unlink(file.path(path, "R"), recursive = TRUE)
+  }
+
+  ## second, create paths for pkg skeleton
+  dirs <- file.path(path,
+    c("inst/sexputils", "R", "src/hashtable/maker"))
+
+  ## third, create directories as necessary
+  sh <- dapr::lap(dirs, dir.create, showWarnings = FALSE, recursive = TRUE)
+
+  ## fourth, create full paths to template files
+  files <- file.path(path, names(pkg_tmp))
+
+  ## fifth, save template files
+  for (i in seq_along(files)) {
+    sh <- write_utf8(pkg_tmp[[i]], files[i])
+  }
 }
 
 
@@ -107,13 +134,15 @@ write_pos_neg <- function(x, path) {
 make_hashtables <- function(path) {
   ## create words file
   system(
-    paste0("cd ", file.path(path, "src/hashtable/maker"), " && sh ./makewords.sh")
+    paste0("cd ", file.path(path, "src/hashtable/maker"),
+      " && sh ./makewords.sh")
   )
   tfse::print_complete("Create hash words")
 
   ## create hash files
   system(
-    paste0("cd ", file.path(path, "src/hashtable/maker"), " && sh ./make2tables.sh")
+    paste0("cd ", file.path(path, "src/hashtable/maker"),
+      " && sh ./make2tables.sh")
   )
   tfse::print_complete("Create hash tables")
 

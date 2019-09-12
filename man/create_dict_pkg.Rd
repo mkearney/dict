@@ -7,7 +7,7 @@
 create_dict_pkg(d, path, open = FALSE, fields = NULL, rstudio = TRUE)
 }
 \arguments{
-\item{d}{Word dictionary created by code{\link{dict()}}}
+\item{d}{Word dictionary created by \code{\link{dict}}}
 
 \item{path}{A path. If it exists, it is used. If it does not exist, it is
 created, provided that the parent path exists.}
@@ -16,7 +16,7 @@ created, provided that the parent path exists.}
 
 \item{fields}{A named list of fields to add to DESCRIPTION, potentially
 overriding default values. See use_description() for how you can set
-personalized defaults using package options}
+personalized defaults using pack?age options}
 
 \item{rstudio}{If TRUE, calls use_rstudio() to make the new package or
 project into an RStudio Project. If FALSE and a non-package project, a
@@ -28,4 +28,30 @@ Path to the newly created project or package, invisibly.
 }
 \description{
 Exports one or more word dictionaries as a standalone R package
+}
+\details{
+The created package is modelled off the extremely fast meanr
+  package, which means it requires compilation but is extremely fast.
+}
+\examples{
+
+## create dict
+d <- dict(list(
+  pos = c("good", "great", "awesome"),
+  neg = c("worst", "awful", "terrible")))
+
+## create package path via temp directory
+path_pkg <- file.path(tempdir(), "simpleexample")
+
+## create R package featuring d
+create_dict_pkg(d, path_pkg)
+
+## create txt vector to test package on
+txt <- c("good great terrible terrible",
+  "good", "good", "other", "awful",
+  "awful", "good", "great", "terrible")
+
+## use new package on txt
+simpleexample::score(txt)
+
 }

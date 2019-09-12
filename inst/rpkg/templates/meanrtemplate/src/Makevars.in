@@ -1,2 +1,0 @@
-PKG_CFLAGS = @OMP_FLAGS@ -I../inst/sexputils
-PKG_LIBS = @OMP_FLAGS@
