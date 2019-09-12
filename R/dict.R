@@ -93,16 +93,19 @@ dict.tbl_df <- function(x) {
     stopifnot(is.numeric(x[[2]]))
     names(x)[2] <- "weight"
   }
-  f <- function(txt) dict::dict_apply(txt, x)
-  attr(f, "dict") <- dict
+  f <- list(
+    score = function(txt) dict::dict_score(txt, x),
+    score_score = function(txt) dict::dict_score_score(txt, x),
+    dict = x
+  )
   structure(f,
-    class = c("dict", "function"),
-    dict = x)
+    class = c("dict", "list")
+  )
 }
 
 #' @export
 print.dict <- function(x, ...) {
   cat("# A dict[ionary]", fill = TRUE)
-  print(attr(x, "dict"), ...)
+  print(x$dict, ...)
   invisible(x)
 }

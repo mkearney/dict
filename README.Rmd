@@ -54,32 +54,27 @@ library(dict)
 ## vector of positive words
 pos <- c("like", "love", "amazing", "excellent", "great", "fantastic",
   "incredible", "awesome", "best", "favorite", "fan", "fun", "enjoyed",
-  "enjoyed", "good", "solid", "better", "soooo", "happy")
+  "good", "solid", "better", "soooo", "happy")
 
 ## vetor of negative words
 neg <- c("hate", "loathe", "dislike", "awful", "horrible", "worst",
   "miserable", "ruin", "ruining", "destroy", "destroyed", "destroying",
-  "pathetic", "hated", "hateful", "unhappy", "horrifies", "horrifying",
-  "terrible")
+  "pathetic", "hated", "unhappy", "terrible")
 ```
 
 ## Create dictionaries
 
-Create a dictionary using only positively-defining words:
+Create a dictionary using only positively-coded words or both positively and negatively coded words.
 
 ```{r}
 ## create dictionary using only positive words
-dict(pos)
-```
+only_pos <- dict(pos)
 
-Create a dictionary using both positvely and negatively associated words:
-
-```{r}
 ## create dictionary using both positive and negative words
 d <- dict(list(pos = pos, neg = neg))
 
 ## view up to n entries of dictionary
-print(d, n = 30)
+print(d, n = 15)
 ```
 
 ## Use word dictionary
@@ -89,16 +84,16 @@ Apply a dictionary to some example text:
 ```{r}
 ## example text
 txt <- c("love amazing excellent good",
-"hate loathe horrifies unhappy terrible",
-"awesome best hateful hated worst")
+  "hate loathe horrifies unhappy terrible",
+  "awesome best hateful hated worst")
 
-## get estimate for each element of txt using pos/neg dictionary
-d(txt)
+## get estimates for each element of txt using pos/neg dictionary
+d$score(txt)
 
-## store estimates in a tibble
+## store only the overall score in a tibble
 tibble::tibble(
-  text = txt,
-  sent = d(txt)
+  text  = txt,
+  score = d$score_score(txt)
 )
 ```
 
@@ -124,8 +119,8 @@ Compare the speed of the default returned function (written in R) versus the opt
 ```{r}
 ## compare speed
 bm <- bench::mark(
-  fun = d(txt),
-  pkg = simpleexample::score_score(txt),
+  fun = d$score(txt),
+  pkg = simpleexample::score(txt),
   relative = TRUE
 )
 

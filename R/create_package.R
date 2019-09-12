@@ -59,12 +59,11 @@ create_dict_pkg <- function(d,
       LazyData = 'yes',
       LazyLoad = 'yes',
       NeedsCompilation = 'yes',
-      ByteCompile = 'yes',
-      Imports = deps
+      ByteCompile = 'yes'#,
+      #Imports = deps
     ),
     rstudio, open = FALSE)
   create_pkg_skeleton(path)
-  #unlink(file.path(path, "NAMESPACE"))
   s <- tfse::readlines(file.path(path, "R/score.R"))
   s <- gsub("meanrtemplate", basename(path), s)
   write_utf8(gsub("meanr", basename(path), s), file.path(path, "R/score.R"))
@@ -122,7 +121,7 @@ write_utf8 <- function(x, path, ...) {
 }
 
 write_pos_neg <- function(x, path) {
-  x <- attr(x, "dict")
+  x <- x$dict
   pos <- unique(x$word[x$weight > 0])
   neg <- unique(x$word[x$weight < 0])
   write_utf8(pos, file.path(path, "src/hashtable/maker/positive.txt"))
