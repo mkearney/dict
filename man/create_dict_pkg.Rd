@@ -4,7 +4,7 @@
 \alias{create_dict_pkg}
 \title{Create an R package}
 \usage{
-create_dict_pkg(d, path, open = FALSE, fields = NULL, rstudio = TRUE)
+create_dict_pkg(d, path, open = FALSE, rstudio = TRUE)
 }
 \arguments{
 \item{d}{Word dictionary created by \code{\link{dict}}}
@@ -13,10 +13,6 @@ create_dict_pkg(d, path, open = FALSE, fields = NULL, rstudio = TRUE)
 created, provided that the parent path exists.}
 
 \item{open}{If TRUE, activates the new project}
-
-\item{fields}{A named list of fields to add to DESCRIPTION, potentially
-overriding default values. See use_description() for how you can set
-personalized defaults using pack?age options}
 
 \item{rstudio}{If TRUE, calls use_rstudio() to make the new package or
 project into an RStudio Project. If FALSE and a non-package project, a

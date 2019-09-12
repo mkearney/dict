@@ -22,6 +22,7 @@ Imports:
     usethis,
     tfse,
     devtools
+Depends: R (>= 2.10)
 License: MIT + file LICENSE
 URL: https://github.com/mkearney/dict
 BugReports: https://github.com/mkearney/dict/issues

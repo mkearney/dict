@@ -194,8 +194,8 @@ bm
 #> # A tibble: 2 x 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-#> 1 fun         6.26   6.10      1         1        1.95
-#> 2 pkg         1      1         6.19      1.36     1
+#> 1 fun         6.49   6.15      1         1        1.62
+#> 2 pkg         1      1         6.36      1.36     1
 
 ## view plot
 ggplot2::autoplot(bm)

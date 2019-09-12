@@ -39,8 +39,8 @@ create_dict_pkg <- function(d,
                             path,
                             open = FALSE,
                             rstudio = TRUE) {
-  if (basename(path) %in% installed.packages()) {
-    remove.packages(basename(path))
+  if (basename(path) %in% utils::installed.packages()) {
+    utils::remove.packages(basename(path))
   }
   deps <- paste0(c(
     'magrittr',
@@ -80,7 +80,7 @@ create_dict_pkg <- function(d,
   devtools::document(path)
   devtools::install(path, quiet = TRUE, upgrade = "always")
   if (open) {
-    browseURL(list.files(path, full.names = TRUE, pattern = "\\.Rproj$"))
+    utils::browseURL(list.files(path, full.names = TRUE, pattern = "\\.Rproj$"))
   }
   invisible(path)
 }

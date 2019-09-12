@@ -5,3 +5,4 @@
 ^Dockerfile$
 .deploy_dir
 ^\.github$
+^working\.R$
